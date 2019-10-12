@@ -1,7 +1,8 @@
 from model import *
 from data_import import *
 
-import sys, getopt
+import sys
+import getopt
 
 # SPEECH ENHANCEMENT NETWORK
 SE_LAYERS = 13 # NUMBER OF INTERNAL LAYERS
@@ -26,13 +27,13 @@ datafolder = "dataset"
 modfolder = "models"
 outfolder = "."
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"hd:l:o:",["ifolder=,lossfolder=,outfolder="])
+    opts, args = getopt.getopt(sys.argv[1:], "hd:l:o:", ["ifolder=,lossfolder=,outfolder="])
 except getopt.GetoptError:
-    print 'Usage: python senet_infer.py -d <datafolder> -l <lossfolder> -o <outfolder>'
+    print('Usage: python senet_infer.py -d <datafolder> -l <lossfolder> -o <outfolder>')
     sys.exit(2)
 for opt, arg in opts:
     if opt == '-h':
-        print 'Usage: python senet_infer.py -d <datafolder> -l <lossfolder> -o <outfolder>'
+        print('Usage: python senet_infer.py -d <datafolder> -l <lossfolder> -o <outfolder>')
         sys.exit()
     elif opt in ("-d", "--datafolder"):
         datafolder = arg
@@ -40,9 +41,9 @@ for opt, arg in opts:
         modfolder = arg
     elif opt in ("-o", "--outfolder"):
         outfolder = arg
-print 'Data folder is "' + datafolder + '/"'
-print 'Loss model folder is "' + modfolder + '/"'
-print 'Output model folder is "' + outfolder + '/"'
+print('Data folder is "' + datafolder + '/"')
+print('Loss model folder is "' + modfolder + '/"')
+print('Output model folder is "' + outfolder + '/"')
 
 # SET LOSS FUNCTIONS AND PLACEHOLDERS
 with tf.variable_scope(tf.get_variable_scope()):
@@ -63,7 +64,7 @@ with tf.variable_scope(tf.get_variable_scope()):
                                  base_channels=LOSS_BASE_CHANNELS, blk_channels=LOSS_BLK_CHANNELS)
 
 # LOAD DATA
-trainset, valset = load_full_data_list(datafolder = datafolder)
+trainset, valset = load_full_data_list(datafolder=datafolder)
 trainset, valset = load_full_data(trainset, valset)
 
 # TRAINING OPTIMIZER
@@ -77,11 +78,11 @@ config=tf.ConfigProto()
 config.gpu_options.allow_growth=True
 sess=tf.Session(config=config)
 
-print "Config ready"
+print("Config ready")
 
 sess.run(tf.global_variables_initializer())
 
-print "Session initialized"
+print("Session initialized")
 
 # LOAD FEATURE LOSS
 if SE_LOSS_TYPE == "FL":
@@ -107,7 +108,7 @@ else:
 
 #####################################################################################
 
-for epoch in range(1,Nepochs+1):
+for epoch in range(1, Nepochs+1):
 
     print("Epoch no.%d"%epoch)
     # TRAINING EPOCH ################################################################

@@ -1,10 +1,11 @@
 import numpy as np
 from tqdm import tqdm
 from scipy.io import wavfile
-import os, csv
+import os
+import csv
 
 # DATA LOADING - LOAD FILE LISTS
-def load_full_data_list(datafolder='dataset'):#check change path names
+def load_full_data_list(datafolder='dataset'):  #check change path names
 
     sets = ['train', 'val']
     dataset = {}
@@ -13,7 +14,7 @@ def load_full_data_list(datafolder='dataset'):#check change path names
         dataset[setname] = {}
         datafolders[setname] = datafolder + '/' + setname + 'set'
 
-    print "Loading files..."
+    print("Loading files...")
     for setname in sets:
         foldername = datafolders[setname]
 
@@ -24,8 +25,8 @@ def load_full_data_list(datafolder='dataset'):#check change path names
         filelist = os.listdir("%s_noisy"%(foldername))
         filelist = [f for f in filelist if f.endswith(".wav")]
         for i in tqdm(filelist):
-            dataset[setname]['innames'].append("%s_noisy/%s"%(foldername,i))
-            dataset[setname]['outnames'].append("%s_clean/%s"%(foldername,i))
+            dataset[setname]['innames'].append("%s_noisy/%s"%(foldername, i))
+            dataset[setname]['outnames'].append("%s_clean/%s"%(foldername, i))
             dataset[setname]['shortnames'].append("%s"%(i))
 
     return dataset['train'], dataset['val']
@@ -65,7 +66,7 @@ def load_noisy_data_list(valfolder = ''):#check change path names
     dataset = {'val': {}}
     datafolders = {'val': valfolder}
 
-    print "Loading files..."
+    print("Loading files...")
     for setname in sets:
         foldername = datafolders[setname]
 
@@ -86,19 +87,19 @@ def load_noisy_data(valset):
 
     for dataset in [valset]:
 
-        dataset['inaudio']  = [None]*len(dataset['innames'])
+        dataset['inaudio'] = [None]*len(dataset['innames'])
 
         for id in tqdm(range(len(dataset['innames']))):
 
             if dataset['inaudio'][id] is None:
-                fs, inputData  = wavfile.read(dataset['innames'][id])
+                fs, inputData = wavfile.read(dataset['innames'][id])
 
-                inputData  = np.reshape(inputData, [-1, 1])
+                inputData = np.reshape(inputData, [-1, 1])
                 shape = np.shape(inputData)
 
                 inputData = np.reshape(inputData, [1, 1, shape[0], shape[1]])
 
-                dataset['inaudio'][id]  = np.float32(inputData)
+                dataset['inaudio'][id] = np.float32(inputData)
 
     return valset
 
@@ -123,7 +124,7 @@ def load_asc_data(ase_folder):
         n = []
         l = []
 
-        with open('%s/meta.txt' % foldername, 'rb') as csvfile:
+        with open('%s/meta.txt' % foldername, 'rt') as csvfile:
             metareader = csv.reader(csvfile, delimiter='\t', quotechar='|')
             for row in metareader:
                 n.append(row[0][6:])

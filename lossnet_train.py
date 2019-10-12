@@ -6,17 +6,17 @@ import sys, getopt
 # COMMAND LINE OPTIONS
 outfolder = "."
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"ho:",["outfolder="])
+    opts, args = getopt.getopt(sys.argv[1:], "ho:", ["outfolder="])
 except getopt.GetoptError:
-    print 'Usage: python senet_infer.py -o <outfolder>'
+    print('Usage: python senet_infer.py -o <outfolder>')
     sys.exit(2)
 for opt, arg in opts:
     if opt == '-h':
-        print 'Usage: python senet_infer.py -o <outfolder>'
+        print('Usage: python senet_infer.py -o <outfolder>')
         sys.exit()
     elif opt in ("-o", "--outfolder"):
         outfolder = arg
-print 'Output model folder is "' + outfolder + '/"'
+print('Output model folder is "' + outfolder + '/"')
 
 # FEATURE LOSS NETWORK PARAMETERS
 LOSS_LAYERS = 14 # NUMBER OF INTERNAL LAYERS
@@ -59,36 +59,36 @@ for setname in sets:
     datasets[n_tasks-1][setname] = asc_datasets[setname]
 label_lists.append(asc_label_list)
 
-# DOMESTIC AUDIO TAGGING TASK
-n_tasks += 1
-dat_datasets, dat_labels, dat_names, dat_label_list =\
-    load_dat_data("dataset/dat/")
-n_classes.append(len(dat_label_list))
-error_type.append(2) # TAGGING ERROR
-names.append({})
-labels.append({})
-datasets.append({})
-for setname in sets:
-    names[n_tasks-1][setname] = dat_names[setname]
-    labels[n_tasks-1][setname] = dat_labels[setname]
-    datasets[n_tasks-1][setname] = dat_datasets[setname]
-label_lists.append(dat_label_list)
+# # DOMESTIC AUDIO TAGGING TASK
+# n_tasks += 1
+# dat_datasets, dat_labels, dat_names, dat_label_list =\
+#     load_dat_data("dataset/dat/")
+# n_classes.append(len(dat_label_list))
+# error_type.append(2) # TAGGING ERROR
+# names.append({})
+# labels.append({})
+# datasets.append({})
+# for setname in sets:
+#     names[n_tasks-1][setname] = dat_names[setname]
+#     labels[n_tasks-1][setname] = dat_labels[setname]
+#     datasets[n_tasks-1][setname] = dat_datasets[setname]
+# label_lists.append(dat_label_list)
 
 ##################################################################################################################
 # INITIALIZE CLASSIFICATION NETWORKS
 
 # INPUT SIGNAL PLACEHOLDER
-input=tf.placeholder(tf.float32,shape=[1,1,None,1])
+input = tf.placeholder(tf.float32,shape=[1, 1, None, 1])
 
 # DEEP FEATURE NETWORK
 features = lossnet(input, n_layers=LOSS_LAYERS, norm_type=LOSS_NORM,
-               base_channels=LOSS_BASE_CHANNELS, blk_channels=LOSS_BLK_CHANNELS)
+                   base_channels=LOSS_BASE_CHANNELS, blk_channels=LOSS_BLK_CHANNELS)
 
 # TASK SPECIFIC LAYERS
 for id in range(n_tasks):
 
     # OUTPUT LABEL LAYER
-    label_task.append(tf.placeholder(tf.float32,shape=[1,n_classes[id]]))
+    label_task.append(tf.placeholder(tf.float32, shape=[1,n_classes[id]]))
     # AVERAGE POOLING OF FEATURES
     avg_features = tf.reduce_mean(features[-1], axis=2, keep_dims=True)
     # LINEAR LAYER
@@ -99,14 +99,14 @@ for id in range(n_tasks):
     logits = tf.reshape(conv_task[id], [tf.shape(input)[0],n_classes[id]])
     
     if error_type[id] == 1:
-        print "Task %d: Softmax" % id
+        print("Task %d: Softmax" % id)
         pred_task.append(tf.nn.softmax(logits))
         # LOSS LAYER WITH LOGISTIC NON-LINEARITY
         net = tf.nn.softmax_cross_entropy_with_logits(labels=label_task[id], logits=logits)
         # AVERAGE LOSS ACROSS CLASSES
         loss_task.append(tf.reduce_mean(net))
     else:
-        print "Task %d: Sigmoid" % id
+        print("Task %d: Sigmoid" % id)
         pred_task.append(tf.nn.sigmoid(logits))
         # LOSS LAYER WITH LOGISTIC NON-LINEARITY
         net = tf.nn.sigmoid_cross_entropy_with_logits(labels=label_task[id], logits=logits)
@@ -167,7 +167,7 @@ for ntask in range(n_tasks):
 #################################################################################################################
 # EPOCH LOOP
 
-for epoch in range(1,Nepoch+1):
+for epoch in range(1, Nepoch+1):
 
     #################
     # TRAINING LOOP #
@@ -242,7 +242,7 @@ for epoch in range(1,Nepoch+1):
             eer /= len(label_lists[ntask])
             str += "%.6f " % (eer)
     
-    print str
+    print(str)
     
     if epoch % 25 > 0: # VALIDATION LOOP EVERY 25 TRAINING EPOCHS
         continue
@@ -294,6 +294,6 @@ for epoch in range(1,Nepoch+1):
             eer /= len(label_lists[ntask])
             str += "%.6f " % (eer)
     
-    print str
+    print(str)
 
 
