@@ -45,7 +45,7 @@ with tf.variable_scope(tf.get_variable_scope()):
     enhanced=senet(input, n_layers=SE_LAYERS, norm_type=SE_NORM, n_channels=SE_CHANNELS)
 
 # LOAD DATA
-valset = load_noisy_data_list(valfolder = valfolder)
+valset = load_noisy_data_list(valfolder=valfolder)
 valset = load_noisy_data(valset)
 
 # BEGIN SCRIPT #########################################################################################################
@@ -75,5 +75,5 @@ for id in tqdm(range(0, len(valset["innames"]))):
     output = sess.run([enhanced],
                         feed_dict={input: inputData})
     output = np.reshape(output, -1)
-    wavfile.write("%s_denoised/%s" % (valfolder,valset["shortnames"][i]), fs, output)
+    wavfile.write("%s_denoised/%s" % (valfolder, valset["shortnames"][i]), fs, output)
 
