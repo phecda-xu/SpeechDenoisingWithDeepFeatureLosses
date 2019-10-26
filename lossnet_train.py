@@ -4,7 +4,7 @@ from data_import import *
 import sys, getopt
 
 # COMMAND LINE OPTIONS
-outfolder = "."
+outfolder = "models"
 try:
     opts, args = getopt.getopt(sys.argv[1:], "ho:", ["outfolder="])
 except getopt.GetoptError:
@@ -214,13 +214,13 @@ for epoch in range(1, Nepoch+1):
         train_pred_all[ntask][file_id] = np.reshape(pred, [1,-1])
         train_label_all[ntask][file_id] = labelData
 
-    str = "T: %d " % (epoch)
+    info_str = "T: %d " % (epoch)
     
     # COMPUTE ERRORS
     for ntask in range(n_tasks):
-        str += "%.6f " % (np.mean(train_all[ntask][np.where(train_all[ntask])]))
+        info_str += "%.6f " % (np.mean(train_all[ntask][np.where(train_all[ntask])]))
         if error_type[ntask] == 1: # MEAN CLASSIFICATION ERROR
-            str += "%.6f " % (np.mean(1.0 * (np.argmax(np.vstack(train_pred_all[ntask]),axis=1) == np.argmax(np.vstack(train_label_all[ntask]),axis=1))))
+            info_str += "%.6f " % (np.mean(1.0 * (np.argmax(np.vstack(train_pred_all[ntask]),axis=1) == np.argmax(np.vstack(train_label_all[ntask]),axis=1))))
         elif error_type[ntask] == 2: # MEAN EQUAL ERROR RATE
             eer = 0.
             for nl, label in enumerate(label_lists[ntask]):
@@ -240,14 +240,13 @@ for epoch in range(1, Nepoch+1):
                 thres_all[ntask][nl] = thres[-1]
                 eer += (fp+fn)/2.
             eer /= len(label_lists[ntask])
-            str += "%.6f " % (eer)
+            info_str += "%.6f " % (eer)
     
-    print(str)
+    print(info_str)
     
     if epoch % 25 > 0: # VALIDATION LOOP EVERY 25 TRAINING EPOCHS
         continue
 
-    saver.save(sess, outfolder + "/loss_model.ckpt")
 
     ###################
     # VALIDATION LOOP #
@@ -269,13 +268,13 @@ for epoch in range(1, Nepoch+1):
             test_pred_all[ntask][file_id] = pred
             test_label_all[ntask][file_id] = labelData
             
-    str = "V: %d " % (epoch)
+    info_str = "V: %d " % (epoch)
     
     # COMPUTE ERRORS
     for ntask in range(n_tasks):
-        str += "%.6f " % (np.mean(test_all[ntask][np.where(test_all[ntask])]))
+        info_str += "%.6f " % (np.mean(test_all[ntask][np.where(test_all[ntask])]))
         if error_type[ntask] == 1: # CLASSIFICATION ERROR
-            str += "%.6f " % (np.mean(1.0 * (np.argmax(np.vstack(test_pred_all[ntask]),axis=1) == np.argmax(np.vstack(test_label_all[ntask]),axis=1))))
+            info_str += "%.6f " % (np.mean(1.0 * (np.argmax(np.vstack(test_pred_all[ntask]),axis=1) == np.argmax(np.vstack(test_label_all[ntask]),axis=1))))
         elif error_type[ntask] == 2: # EQUAL ERROR RATE
             eer = 0.
             for nl, label in enumerate(label_lists[ntask]):
@@ -292,8 +291,9 @@ for epoch in range(1, Nepoch+1):
                         thres[0] = thres[-1]
                 eer += (fp+fn)/2.
             eer /= len(label_lists[ntask])
-            str += "%.6f " % (eer)
+            info_str += "%.6f " % (eer)
     
-    print(str)
+    print(info_str)
+    saver.save(sess, outfolder + "/loss_model_{}.ckpt".format(info_str))
 
 
