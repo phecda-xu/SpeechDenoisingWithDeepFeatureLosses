@@ -25,7 +25,7 @@ log_file = open("logfile.txt", 'w+')
 # COMMAND LINE OPTIONS
 datafolder = "dataset"
 modfolder = "models"
-outfolder = "."
+outfolder = "models"
 try:
     opts, args = getopt.getopt(sys.argv[1:], "hd:l:o:", ["ifolder=,lossfolder=,outfolder="])
 except getopt.GetoptError:
@@ -88,6 +88,7 @@ print("Session initialized")
 if SE_LOSS_TYPE == "FL":
     loss_saver = tf.train.Saver([var for var in tf.trainable_variables() if var.name.startswith("loss_")])
     loss_saver.restore(sess, "./%s/loss_model.ckpt" % modfolder)
+    print('restore from {}'.format("./%s/loss_model.ckpt" % modfolder))
 
 Nepochs = 320
 saver = tf.train.Saver([var for var in tf.trainable_variables() if var.name.startswith("se_")])
@@ -126,10 +127,10 @@ for epoch in range(1, Nepochs+1):
                                 feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
 
         # SAVE ITERATION LOSS
-        loss_train[id,0] = loss_vec[0]
+        loss_train[id, 0] = loss_vec[0]
         if SE_LOSS_TYPE == "FL":
             for j in range(SE_LOSS_LAYERS):
-                loss_train[id,j+1] = loss_vec[j+1]
+                loss_train[id, j+1] = loss_vec[j+1]
 
     # PRINT EPOCH TRAINING LOSS AVERAGE
     str = "T: %d\t " % (epoch)
