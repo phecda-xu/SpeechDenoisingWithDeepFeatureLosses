@@ -3,6 +3,19 @@ from tqdm import tqdm
 from scipy.io import wavfile
 import os
 import csv
+import json
+
+
+def read_json(json_path):
+    wav_list = []
+    with open(json_path, 'r') as f:
+        wav_dic = json.loads(f.readlines()[0])
+    for i in wav_dic.keys():
+        for wav in wav_dic[i]:
+            wav_file = '{}/{}'.format(i,wav)
+            wav_list.append(wav_file)
+    return wav_list
+
 
 # DATA LOADING - LOAD FILE LISTS
 def load_full_data_list(datafolder='dataset'):  #check change path names
@@ -22,7 +35,9 @@ def load_full_data_list(datafolder='dataset'):  #check change path names
         dataset[setname]['outnames'] = []
         dataset[setname]['shortnames'] = []
 
-        filelist = os.listdir("%s_noisy"%(foldername))
+        # filelist = os.listdir("%s_noisy"%(foldername))
+        # filelist = [f for f in filelist if f.endswith(".wav")]
+        filelist = read_json("{}.json".format(foldername))
         filelist = [f for f in filelist if f.endswith(".wav")]
         for i in tqdm(filelist):
             dataset[setname]['innames'].append("%s_noisy/%s"%(foldername, i))
