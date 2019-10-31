@@ -247,6 +247,7 @@ for epoch in range(1, Nepoch+1):
     if epoch % 25 > 0: # VALIDATION LOOP EVERY 25 TRAINING EPOCHS
         continue
 
+    saver.save(sess, outfolder + "/loss_model.ckpt")
 
     ###################
     # VALIDATION LOOP #
@@ -294,6 +295,6 @@ for epoch in range(1, Nepoch+1):
             info_str += "%.6f " % (eer)
     
     print(info_str)
-    saver.save(sess, outfolder + "/loss_model_{}.ckpt".format(info_str))
+
 
 
