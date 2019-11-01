@@ -58,7 +58,7 @@ def read_json(json_path):
 
 def main():
     bk_path = '__background__'
-    for i in ['trainset','valset', 'testset']:
+    for i in ['trainset', 'valset', 'testset']:
         speech_path = 'dataset/{}_clean'.format(i)
         speech_wav, bk_list = load_data(speech_path, bk_path)
         #
@@ -67,3 +67,7 @@ def main():
         #
         wav_list = read_json(json_file)
         len(wav_list)
+
+
+if __name__ == "__main__":
+    main()
