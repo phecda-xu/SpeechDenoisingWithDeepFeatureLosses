@@ -2,14 +2,14 @@ import os
 import json
 import random
 import soundfile as sf
-
+from tqdm import tqdm
 
 def load_data(speech_path, bk_path):
     speech_wav = {}
     bk_list = []
-    for bk in os.listdir(bk_path):
+    for bk in tqdm(os.listdir(bk_path)):
         bk_list.append(bk_path + '/{}'.format(bk))
-    for person in os.listdir(speech_path):
+    for person in tqdm(os.listdir(speech_path)):
         wav_list = []
         for wav in os.listdir(speech_path + '/{}'.format(person)):
             wav_list.append(speech_path + '/{}/{}'.format(person,wav))
