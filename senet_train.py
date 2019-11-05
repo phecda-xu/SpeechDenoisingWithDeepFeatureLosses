@@ -65,7 +65,7 @@ with tf.variable_scope(tf.get_variable_scope()):
 
 # LOAD DATA
 trainset, valset = load_full_data_list(datafolder=datafolder)
-trainset, valset = load_full_data(trainset, valset)
+# trainset, valset = load_full_data(trainset, valset)
 
 # TRAINING OPTIMIZER
 opt=tf.train.AdamOptimizer(learning_rate=1e-4).\
@@ -119,8 +119,11 @@ for epoch in range(1, Nepochs+1):
     for id in tqdm(range(0, len(ids)), file=sys.stdout):
 
         i = ids[id] # RANDOMIZED ITERATION INDEX
-        inputData = trainset["inaudio"][i] # LOAD DEGRADED INPUT
-        outputData = trainset["outaudio"][i] # LOAD GROUND TRUTH
+
+        inputData = np.float32(read_wav_data(trainset["innames"][i]))
+        outputData = np.float32(read_wav_data(trainset["outnames"][i]))
+        # inputData = trainset["inaudio"][i] # LOAD DEGRADED INPUT
+        # outputData = trainset["outaudio"][i] # LOAD GROUND TRUTH
 
         # TRAINING ITERATION
         _, loss_vec = sess.run([opt, loss_fn],
@@ -160,8 +163,10 @@ for epoch in range(1, Nepochs+1):
     for id in tqdm(range(0, len(valset["innames"])), file=sys.stdout):
 
         i = id # NON-RANDOMIZED ITERATION INDEX
-        inputData = valset["inaudio"][i] # LOAD DEGRADED INPUT
-        outputData = valset["outaudio"][i] # LOAD GROUND TRUTH
+        inputData = np.float32(read_wav_data(valset["innames"][i]))
+        outputData = np.float32(read_wav_data(valset["outnames"][i]))
+        # inputData = valset["inaudio"][i] # LOAD DEGRADED INPUT
+        # outputData = valset["outaudio"][i] # LOAD GROUND TRUTH
 
         # VALIDATION ITERATION
         output, loss_vec = sess.run([enhanced, loss_fn],

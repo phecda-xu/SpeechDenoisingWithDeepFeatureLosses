@@ -47,6 +47,13 @@ def load_full_data_list(datafolder='dataset'):  #check change path names
     return dataset['train'], dataset['val']
 
 
+def read_wav_data(filepath):
+    fs, wavData = wavfile.read(filepath)
+    wavData = np.reshape(wavData, [-1, 1])
+    shape = np.shape(wavData)
+    wavData = np.reshape(wavData, [1, 1, shape[0], shape[1]])
+    return wavData
+
 # DATA LOADING - LOAD FILE DATA
 def load_full_data(trainset, valset):
 
