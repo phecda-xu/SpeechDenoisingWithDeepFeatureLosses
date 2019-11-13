@@ -91,12 +91,15 @@ def load_noisy_data_list(valfolder = ''):#check change path names
     print("Loading files...")
     for setname in sets:
         foldername = datafolders[setname]
+        jsonname = datafolders[setname].split('_')[0]
 
         dataset[setname]['innames'] = []
         dataset[setname]['shortnames'] = []
 
-        filelist = os.listdir("%s"%(foldername))
+        filelist = read_json("{}.json".format(jsonname))
         filelist = [f for f in filelist if f.endswith(".wav")]
+        # filelist = os.listdir("%s"%(foldername))
+        # filelist = [f for f in filelist if f.endswith(".wav")]
         for i in tqdm(filelist):
             dataset[setname]['innames'].append("%s/%s"%(foldername,i))
             dataset[setname]['shortnames'].append("%s"%(i))

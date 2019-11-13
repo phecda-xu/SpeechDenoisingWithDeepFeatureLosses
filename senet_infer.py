@@ -46,7 +46,7 @@ with tf.variable_scope(tf.get_variable_scope()):
 
 # LOAD DATA
 valset = load_noisy_data_list(valfolder=valfolder)
-valset = load_noisy_data(valset)
+# valset = load_noisy_data(valset)
 
 # BEGIN SCRIPT #########################################################################################################
 
