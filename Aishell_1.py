@@ -37,7 +37,7 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
             sig, sr = sf.read(wav)
             #
             p_sig = np.sum(abs(sig) ** 2)
-            SNR = 0
+            SNR = 5
             background_volume = p_sig / 10 ** (SNR / 10)
             # background signal
             length = len(sig)
