@@ -40,12 +40,12 @@ def featureloss(target, current, loss_weights, loss_layers, n_layers=14, norm_ty
     feat_target = lossnet(target, reuse=True, n_layers=n_layers, norm_type=norm_type,
                          base_channels=base_channels, blk_channels=blk_channels)
 
-    loss_vec = [0]
+    loss_vec = [0]  # first element set as 0
     for id in range(loss_layers):
         loss_vec.append(l1_loss(feat_current[id], feat_target[id]) / loss_weights[id])
 
-    for id in range(1,loss_layers+1):
-        loss_vec[0] += loss_vec[id]
+    for id in range(1, loss_layers+1):
+        loss_vec[0] += loss_vec[id]  # loss_vec[0] is sum of 6 layer loss
 
     return loss_vec
 

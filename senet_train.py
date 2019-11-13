@@ -18,14 +18,14 @@ LOSS_BLK_CHANNELS = 5 # NUMBER OF LAYERS BETWEEN CHANNEL NUMBER UPDATES
 LOSS_NORM = "SBN" # TYPE OF LAYER NORMALIZATION (NM, SBN or None)
 
 SET_WEIGHT_EPOCH = 10 # NUMBER OF EPOCHS BEFORE FEATURE LOSS BALANCE
-SAVE_EPOCHS = 10 # NUMBER OF EPOCHS BETWEEN MODEL SAVES
+SAVE_EPOCHS = 1 # NUMBER OF EPOCHS BETWEEN MODEL SAVES
 
 log_file = open("logfile.txt", 'w+')
 
 # COMMAND LINE OPTIONS
 datafolder = "dataset"
 modfolder = "models"
-outfolder = "models"
+outfolder = "models/se_model"
 try:
     opts, args = getopt.getopt(sys.argv[1:], "hd:l:o:", ["ifolder=,lossfolder=,outfolder="])
 except getopt.GetoptError:
@@ -110,14 +110,11 @@ else:
 #####################################################################################
 
 for epoch in range(1, Nepochs+1):
-
-    print("Epoch no.%d"%epoch)
     # TRAINING EPOCH ################################################################
 
-    ids = np.random.permutation(len(trainset["innames"])) # RANDOM FILE ORDER
+    ids = np.random.permutation(len(trainset["innames"]))[:10] # RANDOM FILE ORDER
 
-    for id in tqdm(range(0, len(ids)), file=sys.stdout):
-
+    for id in range(0, len(ids)):
         i = ids[id] # RANDOMIZED ITERATION INDEX
 
         inputData = np.float32(read_wav_data(trainset["innames"][i]))
@@ -127,21 +124,22 @@ for epoch in range(1, Nepochs+1):
 
         # TRAINING ITERATION
         _, loss_vec = sess.run([opt, loss_fn],
-                                feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
-
+                               feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
+        print('Epoch {}/{}; step {}/{} Training loss is: {}'.format(epoch, Nepochs, id, len(ids), loss_vec[0]))
         # SAVE ITERATION LOSS
         loss_train[id, 0] = loss_vec[0]
         if SE_LOSS_TYPE == "FL":
             for j in range(SE_LOSS_LAYERS):
                 loss_train[id, j+1] = loss_vec[j+1]
-
     # PRINT EPOCH TRAINING LOSS AVERAGE
-    str = "T: %d\t " % (epoch)
+    str = "Epoch {} training layer loss: ".format(epoch)
     if SE_LOSS_TYPE == "FL":
         for j in range(SE_LOSS_LAYERS+1):
             str += ", %10.6e"%(np.mean(loss_train, axis=0)[j])
     else:
         str += ", %10.6e"%(np.mean(loss_train, axis=0)[0])
+
+    print(str)
 
     log_file.write(str + "\n")
     log_file.flush()
@@ -154,13 +152,11 @@ for epoch in range(1, Nepochs+1):
     if epoch % SAVE_EPOCHS != 0:
         continue
 
-    saver.save(sess, outfolder + "/se_model.ckpt")
-
     # VALIDATION EPOCH ##############################################################
 
     print("Validation epoch")
 
-    for id in tqdm(range(0, len(valset["innames"])), file=sys.stdout):
+    for id in tqdm(range(0, len(valset["innames"][:10]))):
 
         i = id # NON-RANDOMIZED ITERATION INDEX
         inputData = np.float32(read_wav_data(valset["innames"][i]))
@@ -170,7 +166,9 @@ for epoch in range(1, Nepochs+1):
 
         # VALIDATION ITERATION
         output, loss_vec = sess.run([enhanced, loss_fn],
-                            feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
+                                    feed_dict={input: inputData,
+                                               clean: outputData,
+                                               loss_weights: loss_w})
 
         # SAVE ITERATION LOSS
         loss_val[id,0] = loss_vec[0]
@@ -179,13 +177,15 @@ for epoch in range(1, Nepochs+1):
                 loss_val[id,j+1] = loss_vec[j+1]
 
     # PRINT VALIDATION EPOCH LOSS AVERAGE
-    str = "V: %d " % (epoch)
+    str = "Epoch {} evaluation layer loss: ".format(epoch)
     if SE_LOSS_TYPE == "FL":
         for j in range(SE_LOSS_LAYERS+1):
             str += ", %10.6e"%(np.mean(loss_val, axis=0)[j]*1e9)
     else:
         str += ", %10.6e"%(np.mean(loss_val, axis=0)[0]*1e9)
-
+    model_name = round(np.mean(loss_val, axis=0)[0], 4)
+    saver.save(sess, outfolder + "/se_model_{}_{}.ckpt".format(epoch, model_name))
+    print(str)
     log_file.write(str + "\n")
     log_file.flush()
 

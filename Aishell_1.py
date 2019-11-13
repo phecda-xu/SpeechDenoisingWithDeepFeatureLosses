@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import numpy as np
 import soundfile as sf
 from tqdm import tqdm
 
@@ -21,7 +22,7 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
     wav_dic = {}
     for speaker in speech_wav_dic.keys():
         wav_list = []
-        bk_ground_sig,sr = sf.read(random.choice(bk_wav_list))
+        bk_ground_sig, sr = sf.read(random.choice(bk_wav_list))
         exists = os.path.isdir(os.path.join(wav_save_path, speaker))
         if exists:
             print("wav saved in {}".format(wav_save_path + speaker))
@@ -30,15 +31,25 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
             os.makedirs(os.path.join(wav_save_path, speaker))
         print('processing speaker {}'.format(speaker))
         for wav in speech_wav_dic[speaker]:
+            # speech signal
             wav_name = os.path.basename(wav)
             wav_list.append(wav_name)
-            sig,sr = sf.read(wav)
+            sig, sr = sf.read(wav)
+            #
+            p_sig = np.sum(abs(sig) ** 2)
+            SNR = 0
+            background_volume = p_sig / 10 ** (SNR / 10)
+            # background signal
             length = len(sig)
             end = len(bk_ground_sig)
             start = random.randint(0, end - length)
-            new_wav = bk_ground_sig[start: start+length] + sig
+            background_buffer = bk_ground_sig[start: start+length]
+            background_buffer = np.sqrt(background_volume / p_sig) * background_buffer
+            # add noise
+            new_wav = background_buffer + sig
+            # saving
             sf.write(os.path.join(wav_save_path, speaker, wav_name),new_wav,sr)
-        wav_dic[speaker]= wav_list
+        wav_dic[speaker] = wav_list
     json_file = '{}/{}.json'.format(os.path.dirname(wav_save_path), setname)
     with open(json_file, 'w') as f:
         json.dump(wav_dic, f)
