@@ -69,7 +69,8 @@ saver.restore(sess, "./%s/se_model.ckpt" % modfolder)
 for id in tqdm(range(0, len(valset["innames"]))):
 
     i = id # NON-RANDOMIZED ITERATION INDEX
-    inputData = valset["inaudio"][i] # LOAD DEGRADED INPUT
+    inputData = np.float32(read_wav_data(valset["innames"][i]))
+    # inputData = valset["inaudio"][i] # LOAD DEGRADED INPUT
 
     # VALIDATION ITERATION
     output = sess.run([enhanced],
