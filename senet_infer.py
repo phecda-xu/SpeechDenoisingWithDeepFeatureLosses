@@ -76,5 +76,10 @@ for id in tqdm(range(0, len(valset["innames"]))):
     output = sess.run([enhanced],
                         feed_dict={input: inputData})
     output = np.reshape(output, -1)
+    exist = os.path.isdir(os.path.dirname("%s_denoised/%s" % (valfolder, valset["shortnames"][i])))
+    if exist:
+        print('')
+    else:
+        os.makedirs(str(os.path.dirname("%s_denoised/%s" % (valfolder, valset["shortnames"][i]))))
     wavfile.write("%s_denoised/%s" % (valfolder, valset["shortnames"][i]), fs, output)
 
