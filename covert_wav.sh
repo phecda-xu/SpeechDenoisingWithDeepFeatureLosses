@@ -13,7 +13,7 @@ cd ../..
 cd dataset_tmp/trainset_clean/
 for i in */;
     do
-    echo $i
+    echo "trainset_clean/$i"
     mkdir -p "../../dataset/trainset_clean/$i"
     cd "$i"
     for f in *.wav;
@@ -28,7 +28,7 @@ cd ../..
 cd dataset_tmp/valset_clean/
 for i in */;
     do
-    echo $i
+    echo "valset_clean/$i"
     mkdir -p "../../dataset/valset_clean/$i"
     cd "$i"
     for f in *.wav;
@@ -42,7 +42,7 @@ cd ../..
 cd dataset_tmp/testset_clean/
 for i in */;
     do
-    echo $i
+    echo "testset_clean/$i"
     mkdir -p "../../dataset/testset_clean/$i"
     cd "$i"
     for f in *.wav;
