@@ -51,13 +51,13 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
             # background signal
             length = len(sig)
             end = len(bk_ground_sig)
-            start = random.randint(0, end - length)
+            start = random.randint(0, max(0, end - length))
             background_buffer = bk_ground_sig[start: start+length]
             background_buffer = np.sqrt(background_volume / p_sig) * background_buffer
             # add noise
             new_wav = background_buffer + sig
             # saving
-            sf.write(os.path.join(wav_save_path, speaker, wav_name),new_wav,sr)
+            sf.write(os.path.join(wav_save_path, speaker, wav_name),new_wav,sr,subtype='PCM_32')
         wav_dic[speaker] = wav_list
     json_file = '{}/{}.json'.format(os.path.dirname(wav_save_path), setname)
     with open(json_file, 'w') as f:
