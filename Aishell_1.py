@@ -38,15 +38,15 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
             #
             p_sig = np.sum(abs(sig) ** 2)
             if p_sig <= 10:
-                SNR = round(np.random.uniform(25, 25), 2)
+                SNR = round(np.random.uniform(20, 20), 2)
             elif 10 < p_sig <= 50:
-                SNR = round(np.random.uniform(21, 25), 2)
+                SNR = round(np.random.uniform(15, 20), 2)
             elif 50 < p_sig <= 100:
-                SNR = round(np.random.uniform(17, 21), 2)
+                SNR = round(np.random.uniform(10, 15), 2)
             elif 100 < p_sig <= 200:
-                SNR = round(np.random.uniform(13, 17), 2)
+                SNR = round(np.random.uniform(5, 10), 2)
             else:
-                SNR = round(np.random.uniform(9, 13), 2)
+                SNR = round(np.random.uniform(0, 5), 2)
             background_volume = p_sig / 10 ** (SNR / 10)
             # background signal
             length = len(sig)
