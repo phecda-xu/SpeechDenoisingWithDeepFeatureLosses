@@ -18,7 +18,7 @@ LOSS_BLK_CHANNELS = 5 # NUMBER OF LAYERS BETWEEN CHANNEL NUMBER UPDATES
 LOSS_NORM = "SBN" # TYPE OF LAYER NORMALIZATION (NM, SBN or None)
 
 SET_WEIGHT_EPOCH = 10 # NUMBER OF EPOCHS BEFORE FEATURE LOSS BALANCE
-SAVE_EPOCHS = 1 # NUMBER OF EPOCHS BETWEEN MODEL SAVES
+SAVE_EPOCHS = 10 # NUMBER OF EPOCHS BETWEEN MODEL SAVES
 
 log_file = open("logfile.txt", 'w+')
 
@@ -125,7 +125,8 @@ for epoch in range(1, Nepochs+1):
         # TRAINING ITERATION
         _, loss_vec = sess.run([opt, loss_fn],
                                feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
-        print('Epoch {}/{}; step {}/{} Training loss is: {}'.format(epoch, Nepochs, id, len(ids), loss_vec[0]))
+        loss_ = round(loss_vec[0], 4)
+        print('Epoch {}/{}; step {}/{} Training loss is: {:.4f}'.format(epoch, Nepochs, id, len(ids), loss_))
         # SAVE ITERATION LOSS
         loss_train[id, 0] = loss_vec[0]
         if SE_LOSS_TYPE == "FL":
@@ -183,8 +184,7 @@ for epoch in range(1, Nepochs+1):
             str += ", %10.6e"%(np.mean(loss_val, axis=0)[j]*1e9)
     else:
         str += ", %10.6e"%(np.mean(loss_val, axis=0)[0]*1e9)
-    model_name = round(np.mean(loss_val, axis=0)[0], 4)
-    saver.save(sess, outfolder + "/se_model_{}_{}.ckpt".format(epoch, model_name))
+    saver.save(sess, outfolder + "/se_model_{}_{:.4f}.ckpt".format(epoch, np.mean(loss_val, axis=0)[0]))
     print(str)
     log_file.write(str + "\n")
     log_file.flush()
