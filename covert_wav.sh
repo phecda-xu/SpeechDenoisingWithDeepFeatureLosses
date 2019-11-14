@@ -1,6 +1,5 @@
 #!/usr/bin
 
-mkdir -p dataset
 
 cd dataset_tmp
 for d in */;
