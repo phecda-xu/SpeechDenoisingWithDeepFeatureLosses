@@ -1,20 +1,49 @@
 #!/usr/bin
 
+cd dataset_tmp/__background__/
 
-cd dataset_tmp
-for d in */;
+mkdir -p "../../dataset/__background__/"
+for f in *.wav;
     do
-    echo 111$d
-    for i in $d*/;
+    sox "$f" -e float -b 32 "../../dataset/__background__/$f" rate -v -I 16000
+    done
+cd ../..
+
+cd dataset_tmp/trainset_clean/
+for i in */;
+    do
+    mkdir -p "../../dataset/trainset_clean/$i"
+    cd "$i"
+    for f in *.wav;
         do
-        echo 222$i
-        mkdir -p "../dataset/$i"
-        cd "$i"
-        for f in *.wav; 
-            do
-            # echo 333"../../../dataset/$i$f"
-            sox "$f" -e float -b 32 "../../../dataset/$i$f" rate -v -I 16000
-            done
-        cd ../..
+        sox "$f" -e float -b 32 "../../../dataset/trainset_clean/$i$f" rate -v -I 16000
         done
+    cd ..
+    done
+
+
+cd ../..
+cd dataset_tmp/valset_clean/
+for i in */;
+    do
+    mkdir -p "../../dataset/valset_clean/$i"
+    cd "$i"
+    for f in *.wav;
+        do
+        sox "$f" -e float -b 32 "../../../dataset/valset_clean/$i$f" rate -v -I 16000
+        done
+    cd ..
+    done
+
+cd ../..
+cd dataset_tmp/testset_clean/
+for i in */;
+    do
+    mkdir -p "../../dataset/testset_clean/$i"
+    cd "$i"
+    for f in *.wav;
+        do
+        sox "$f" -e float -b 32 "../../../dataset/testset_clean/$i$f" rate -v -I 16000
+        done
+    cd ..
     done
