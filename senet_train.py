@@ -112,7 +112,7 @@ else:
 for epoch in range(1, Nepochs+1):
     # TRAINING EPOCH ################################################################
 
-    ids = np.random.permutation(len(trainset["innames"]))[:10] # RANDOM FILE ORDER
+    ids = np.random.permutation(len(trainset["innames"])) # RANDOM FILE ORDER
 
     for id in range(0, len(ids)):
         i = ids[id] # RANDOMIZED ITERATION INDEX
@@ -156,7 +156,7 @@ for epoch in range(1, Nepochs+1):
 
     print("Validation epoch")
 
-    for id in tqdm(range(0, len(valset["innames"][:10]))):
+    for id in tqdm(range(0, len(valset["innames"]))):
 
         i = id # NON-RANDOMIZED ITERATION INDEX
         inputData = np.float32(read_wav_data(valset["innames"][i]))
