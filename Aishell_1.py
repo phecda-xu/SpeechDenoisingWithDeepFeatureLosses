@@ -5,6 +5,7 @@ import numpy as np
 import soundfile as sf
 from tqdm import tqdm
 
+
 def load_data(speech_path, bk_path):
     speech_wav = {}
     bk_list = []
@@ -35,6 +36,8 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
             wav_name = os.path.basename(wav)
             wav_list.append(wav_name)
             sig, sr = sf.read(wav)
+            if len(sig) < 16000:
+                continue
             #
             p_sig = np.sum(abs(sig) ** 2)
             if p_sig <= 10:
