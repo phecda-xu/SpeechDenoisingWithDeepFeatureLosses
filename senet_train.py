@@ -77,7 +77,7 @@ trainset, valset = load_full_data_list(datafolder=datafolder)
 # trainset, valset = load_full_data(trainset, valset)
 
 # TRAINING OPTIMIZER
-opt=tf.train.AdamOptimizer(learning_rate=1e-4).\
+opt=tf.train.AdamOptimizer(learning_rate=1e-5).\
     minimize(loss_fn[0], var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
 
 # BEGIN SCRIPT #########################################################################################################
@@ -123,7 +123,7 @@ for epoch in range(1, Nepochs+1):
 
     ids = np.random.permutation(len(trainset["innames"])) # RANDOM FILE ORDER
 
-    for id in range(3484, len(ids)):
+    for id in range(0, len(ids)):
         i = ids[id] # RANDOMIZED ITERATION INDEX
 
         inputData = np.float32(read_wav_data(trainset["innames"][i]))
