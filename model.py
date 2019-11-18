@@ -34,11 +34,19 @@ def lossnet(input, n_layers=14, training=True, reuse=False, norm_type="SBN",
 
 def featureloss(target, current, loss_weights, loss_layers, n_layers=14, norm_type="SBN", base_channels=32, blk_channels=5):
 
-    feat_current = lossnet(current, reuse=False, n_layers=n_layers, norm_type=norm_type,
-                         base_channels=base_channels, blk_channels=blk_channels)
+    feat_current = lossnet(current,
+                           reuse=False,
+                           n_layers=n_layers,
+                           norm_type=norm_type,
+                           base_channels=base_channels,
+                           blk_channels=blk_channels)
 
-    feat_target = lossnet(target, reuse=True, n_layers=n_layers, norm_type=norm_type,
-                         base_channels=base_channels, blk_channels=blk_channels)
+    feat_target = lossnet(target,
+                          reuse=True,
+                          n_layers=n_layers,
+                          norm_type=norm_type,
+                          base_channels=base_channels,
+                          blk_channels=blk_channels)
 
     loss_vec = [0]  # first element set as 0
     for id in range(loss_layers):

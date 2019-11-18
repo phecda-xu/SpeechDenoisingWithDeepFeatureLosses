@@ -47,10 +47,13 @@ print('Output model folder is "' + outfolder + '/"')
 
 # SET LOSS FUNCTIONS AND PLACEHOLDERS
 with tf.variable_scope(tf.get_variable_scope()):
-    input=tf.placeholder(tf.float32,shape=[None,1,None,1])
-    clean=tf.placeholder(tf.float32,shape=[None,1,None,1])
+    input = tf.placeholder(tf.float32, shape=[None,1,None,1])
+    clean = tf.placeholder(tf.float32, shape=[None,1,None,1])
         
-    enhanced=senet(input, n_layers=SE_LAYERS, norm_type=SE_NORM, n_channels=SE_CHANNELS)
+    enhanced = senet(input,
+                     n_layers=SE_LAYERS,
+                     norm_type=SE_NORM,
+                     n_channels=SE_CHANNELS)
         
     if SE_LOSS_TYPE == "L1": # L1 LOSS
         loss_weights = tf.placeholder(tf.float32, shape=[])
@@ -60,8 +63,14 @@ with tf.variable_scope(tf.get_variable_scope()):
         loss_fn = l2_loss(clean, enhanced)
     else: # FEATURE LOSS
         loss_weights = tf.placeholder(tf.float32, shape=[SE_LOSS_LAYERS])
-        loss_fn = featureloss(clean, enhanced, loss_weights, loss_layers=SE_LOSS_LAYERS, n_layers=LOSS_LAYERS, norm_type=LOSS_NORM,
-                                 base_channels=LOSS_BASE_CHANNELS, blk_channels=LOSS_BLK_CHANNELS)
+        loss_fn = featureloss(clean,
+                              enhanced,
+                              loss_weights,
+                              loss_layers=SE_LOSS_LAYERS,
+                              n_layers=LOSS_LAYERS,
+                              norm_type=LOSS_NORM,
+                              base_channels=LOSS_BASE_CHANNELS,
+                              blk_channels=LOSS_BLK_CHANNELS)
 
 # LOAD DATA
 trainset, valset = load_full_data_list(datafolder=datafolder)
@@ -69,7 +78,7 @@ trainset, valset = load_full_data_list(datafolder=datafolder)
 
 # TRAINING OPTIMIZER
 opt=tf.train.AdamOptimizer(learning_rate=1e-4).\
-    minimize(loss_fn[0],var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
+    minimize(loss_fn[0], var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
 
 # BEGIN SCRIPT #########################################################################################################
 
@@ -114,7 +123,7 @@ for epoch in range(1, Nepochs+1):
 
     ids = np.random.permutation(len(trainset["innames"])) # RANDOM FILE ORDER
 
-    for id in range(0, len(ids)):
+    for id in range(3484, len(ids)):
         i = ids[id] # RANDOMIZED ITERATION INDEX
 
         inputData = np.float32(read_wav_data(trainset["innames"][i]))
@@ -125,8 +134,8 @@ for epoch in range(1, Nepochs+1):
         # TRAINING ITERATION
         _, loss_vec = sess.run([opt, loss_fn],
                                feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
-        loss_ = round(loss_vec[0], 4)
-        print('Epoch {}/{}; step {}/{} Training loss is: {:.4f}'.format(epoch, Nepochs, id, len(ids), loss_))
+
+        print('Epoch {}/{}; step {}/{} Training loss is: {:.4f}'.format(epoch, Nepochs, id, len(ids), loss_vec[0]))
         # SAVE ITERATION LOSS
         loss_train[id, 0] = loss_vec[0]
         if SE_LOSS_TYPE == "FL":

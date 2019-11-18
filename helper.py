@@ -44,12 +44,10 @@ def identity_initializer():
 
 
 # L1 LOSS FUNCTION
-def l1_loss(target,current):
+def l1_loss(target, current):
     return tf.reduce_mean(tf.abs(target-current))
 
 
 # L2 LOSS FUNCTION
-def l2_loss(target,current):
+def l2_loss(target, current):
     return tf.reduce_mean(tf.square(target-current))
-
-
