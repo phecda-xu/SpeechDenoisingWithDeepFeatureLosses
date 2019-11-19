@@ -135,10 +135,7 @@ for epoch in range(1, Nepochs+1):
         _, loss_vec = sess.run([opt, loss_fn],
                                feed_dict={input: inputData, clean: outputData, loss_weights: loss_w})
 
-        if '{}'.format(loss_vec[0]) == 'nan':
-            print(trainset["innames"][i])
-        else:
-            print('Epoch {}/{}; step {}/{} Training loss is: {:.4f}, {}'.format(
+        print('Epoch {}/{}; step {}/{} Training loss is: {:.4f}, {}'.format(
                 epoch, Nepochs, id, len(ids), loss_vec[0], loss_vec[1:]))
         # SAVE ITERATION LOSS
         loss_train[id, 0] = loss_vec[0]
