@@ -77,7 +77,7 @@ trainset, valset = load_full_data_list(datafolder=datafolder)
 # trainset, valset = load_full_data(trainset, valset)
 
 # TRAINING OPTIMIZER
-opt=tf.train.AdamOptimizer(learning_rate=1e-5).\
+opt=tf.train.AdamOptimizer(learning_rate=1e-4).\
     minimize(loss_fn[0], var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
 
 # BEGIN SCRIPT #########################################################################################################
