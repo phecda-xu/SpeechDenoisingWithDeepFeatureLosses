@@ -34,10 +34,11 @@ def add_noise(speech_wav_dic, bk_wav_list, wav_save_path, setname):
         for wav in speech_wav_dic[speaker]:
             # speech signal
             wav_name = os.path.basename(wav)
-            wav_list.append(wav_name)
             sig, sr = sf.read(wav)
             if len(sig) < 16000:
                 continue
+            #
+            wav_list.append(wav_name)
             #
             p_sig = np.sum(abs(sig) ** 2)
             if p_sig <= 10:
