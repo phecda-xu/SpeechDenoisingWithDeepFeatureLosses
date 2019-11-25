@@ -60,17 +60,8 @@ def add_noise(speech_noise_list, setname):
         noisy_speech_list.append(noisy_speech)
         #
         p_sig = np.sum(abs(sig) ** 2)
-        if p_sig <= 10:
-            SNR = round(np.random.uniform(20, 20), 2)
-        elif 10 < p_sig <= 50:
-            SNR = round(np.random.uniform(15, 20), 2)
-        elif 50 < p_sig <= 100:
-            SNR = round(np.random.uniform(10, 15), 2)
-        elif 100 < p_sig <= 200:
-            SNR = round(np.random.uniform(5, 10), 2)
-        else:
-            SNR = round(np.random.uniform(0, 5), 2)
-        background_volume = p_sig / 10 ** (SNR / 10)
+        SNR = 0
+        background_volume = p_sig / (10 ** (SNR / 10))
         # background signal
         length = len(sig)
         end = len(bk_ground_sig)
@@ -78,7 +69,12 @@ def add_noise(speech_noise_list, setname):
             bk_ground_sig = np.tile(bk_ground_sig, int(np.ceil(length/end)))
         start = random.randint(0, max(0, end - length))
         background_buffer = bk_ground_sig[start: start + length]
-        background_buffer = np.sqrt(background_volume / p_sig) * background_buffer
+        p_back = np.sum(abs(background_buffer) ** 2)
+        background_ratio = np.sqrt(background_volume / p_back)
+        background_buffer = background_ratio * background_buffer
+
+        p_back = np.sum(abs(background_buffer) ** 2)
+        snr = 10*np.log10(p_sig/p_back)
         # add noise
         new_wav = background_buffer + sig
         # saving
@@ -117,3 +113,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
