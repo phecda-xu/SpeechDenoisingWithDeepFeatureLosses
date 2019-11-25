@@ -54,7 +54,7 @@ with tf.variable_scope(tf.get_variable_scope()):
                      n_layers=SE_LAYERS,
                      norm_type=SE_NORM,
                      n_channels=SE_CHANNELS)
-        
+
     if SE_LOSS_TYPE == "L1": # L1 LOSS
         loss_weights = tf.placeholder(tf.float32, shape=[])
         loss_fn = l1_loss(clean, enhanced)
@@ -77,14 +77,19 @@ trainset, valset = load_full_data_list(datafolder=datafolder)
 # trainset, valset = load_full_data(trainset, valset)
 
 # TRAINING OPTIMIZER
-opt=tf.train.AdamOptimizer(learning_rate=1e-5).\
-    minimize(loss_fn[0], var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
+# opt=tf.train.AdamOptimizer(learning_rate=1e-5).\
+#     minimize(loss_fn[0], var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
+
+optimizer = tf.train.AdamOptimizer(learning_rate=1e-5)
+gradients = optimizer.compute_gradients(loss_fn[0], var_list=[var for var in tf.trainable_variables() if var.name.startswith("se_")])
+clippd_gradients = [(tf.clip_by_norm(grad, 1), var) for grad, var in gradients if grad is not None]
+opt = optimizer.apply_gradients(clippd_gradients)
 
 # BEGIN SCRIPT #########################################################################################################
 
 # INITIALIZE GPU CONFIG
 config=tf.ConfigProto()
-config.gpu_options.allow_growth=True
+config.gpu_options.allow_growth = True
 sess=tf.Session(config=config)
 
 print("Config ready")
