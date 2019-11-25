@@ -72,9 +72,6 @@ def add_noise(speech_noise_list, setname):
         p_back = np.sum(abs(background_buffer) ** 2)
         background_ratio = np.sqrt(background_volume / p_back)
         background_buffer = background_ratio * background_buffer
-
-        p_back = np.sum(abs(background_buffer) ** 2)
-        snr = 10*np.log10(p_sig/p_back)
         # add noise
         new_wav = background_buffer + sig
         # saving
@@ -104,7 +101,6 @@ def main():
         speech_list, bk_list = load_data(speech_path, bk_path)
         #
         speech_noise_list = speech_join_noise(speech_list, bk_list)
-
         json_file = add_noise(speech_noise_list, i)
         #
         wav_list = read_json(json_file)
