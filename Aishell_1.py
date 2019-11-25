@@ -75,7 +75,7 @@ def add_noise(speech_noise_list, setname):
         length = len(sig)
         end = len(bk_ground_sig)
         if length > end:
-            bk_ground_sig = np.tile(bk_ground_sig, np.ceil(length/end))
+            bk_ground_sig = np.tile(bk_ground_sig, int(np.ceil(length/end)))
         start = random.randint(0, max(0, end - length))
         background_buffer = bk_ground_sig[start: start + length]
         background_buffer = np.sqrt(background_volume / p_sig) * background_buffer
