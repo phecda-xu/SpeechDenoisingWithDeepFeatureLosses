@@ -6,7 +6,7 @@ mkdir -p "../../dataset/__background__/"
 echo "process __background__"
 for f in *.wav;
     do
-    sox "$f" -e float -b 32 "../../dataset/__background__/$f" rate -v -I 16000
+    sox "$f" -r 16000 -b 32 -e float "../../dataset/__background__/$f"
     done
 cd ../..
 
@@ -19,7 +19,7 @@ cd ../..
 #    cd "$i"
 #    for f in *.wav;
 #        do
-#        sox "$f" -e float -b 32 "../../../dataset/trainset_clean/$i$f" rate -v -I 16000
+#        sox "$f" -r 16000 -b 32 -e float "../../../dataset/trainset_clean/$i$f"
 #        done
 #    cd ..
 #    done
@@ -34,7 +34,7 @@ cd ../..
 #    cd "$i"
 #    for f in *.wav;
 #        do
-#        sox "$f" -e float -b 32 "../../../dataset/valset_clean/$i$f" rate -v -I 16000
+#        sox "$f" -r 16000 -b 32 -e float "../../../dataset/valset_clean/$i$f"
 #        done
 #    cd ..
 #    done
@@ -48,7 +48,7 @@ cd ../..
 #    cd "$i"
 #    for f in *.wav;
 #        do
-#        sox "$f" -e float -b 32 "../../../dataset/testset_clean/$i$f" rate -v -I 16000
+#        sox "$f" -r 16000 -b 32 -e float "../../../dataset/testset_clean/$i$f"
 #        done
 #    cd ..
 #    done
