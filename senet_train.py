@@ -23,6 +23,8 @@ SAVE_EPOCHS = 10 # NUMBER OF EPOCHS BETWEEN MODEL SAVES
 log_file = open("logfile.txt", 'w+')
 
 # COMMAND LINE OPTIONS
+start_checkpoint = ""
+
 datafolder = "dataset"
 modfolder = "models"
 outfolder = "models/se_model"
@@ -107,6 +109,10 @@ if SE_LOSS_TYPE == "FL":
 Nepochs = 320
 saver = tf.train.Saver([var for var in tf.trainable_variables() if var.name.startswith("se_")])
 
+
+if start_checkpoint != "":
+    saver.restore(sess, start_checkpoint)
+    print('restore from {}'.format(start_checkpoint))
 ########################################################################################################################
 
 if SE_LOSS_TYPE == "FL":
