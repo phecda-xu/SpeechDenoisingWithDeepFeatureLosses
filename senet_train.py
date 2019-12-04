@@ -23,7 +23,7 @@ SAVE_EPOCHS = 10 # NUMBER OF EPOCHS BETWEEN MODEL SAVES
 log_file = open("logfile.txt", 'w+')
 
 # COMMAND LINE OPTIONS
-start_checkpoint = ""
+start_checkpoint = "models/se_model/se_model_30_3.9699"
 
 datafolder = "dataset"
 modfolder = "models"
