@@ -4,7 +4,7 @@ from data_import import *
 import sys
 import getopt
 
-valfolder = "dataset/valset_noisy"
+valfolder = "dataset/testset_noisy"
 modfolder = "models"
 
 try:
