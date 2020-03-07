@@ -62,7 +62,7 @@ sess.run(tf.global_variables_initializer())
 print("Session initialized")
 
 saver = tf.train.Saver([var for var in tf.trainable_variables() if var.name.startswith("se_")])
-saver.restore(sess, "%s/se_model_130_3.2121.ckpt" % modfolder)
+saver.restore(sess, "%s/se_model/se_model_130_3.2121.ckpt" % modfolder)
 
 #####################################################################################
 
